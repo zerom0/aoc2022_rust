@@ -19,7 +19,7 @@ fn main() {
                         panic!()
                     };
 
-                    if contains(first_range, second_range) || contains(second_range, first_range) {
+                    if overlaps(first_range, second_range) || overlaps(second_range, first_range) {
                         1
                     } else {
                         0
@@ -31,6 +31,10 @@ fn main() {
     println!("{:?}", full_oversaps);
 }
 
-fn contains(left: (u32, u32), right: (u32, u32)) -> bool {
+fn _contains(left: (u32, u32), right: (u32, u32)) -> bool {
     left.0 <= right.0 && left.1 >= right.1
+}
+
+fn overlaps(left: (u32, u32), right: (u32, u32)) -> bool {
+    left.0 <= right.0 && left.1 >= right.0
 }
