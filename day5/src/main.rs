@@ -41,10 +41,13 @@ fn main() {
         let count = parts[1].parse::<usize>().unwrap();
         let from = parts[3].parse::<usize>().unwrap();
         let to = parts[5].parse::<usize>().unwrap();
+        let mut items = Vec::new();
         for _ in 0..count {
-            let item = working_stacks[from - 1].pop().unwrap();
-            working_stacks[to - 1].push(item);
+            items.push(working_stacks[from - 1].pop().unwrap());
         }
+        items.reverse();
+        // println!("{:?}", items);
+        working_stacks[to - 1].append(&mut items);
         // println!("{} * {} -> {}", count, from, to);
         // println!("{:?}", working_stacks);
     }
