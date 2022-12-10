@@ -4,23 +4,28 @@ fn main() {
         Ok(_) => {
             if line.starts_with("$ cd /") {
                 let filesystem = enter_directory("");
-                println!("{:?}", walk(&filesystem));
+                let free_space = 70_000_000 - filesystem.dir_size;
+                let required_space = 30_000_000 - free_space;
+                println!("required space = {}", required_space);
+                println!("{:?}", walk(&filesystem, required_space));
             }
         }
         _ => (),
     }
 }
 
-fn walk(subtree: &Dir) -> usize {
-    let mut subsum = 0;
-    if subtree.dir_size < 100_000 {
-        println!("{} has a size of {}", subtree.name, subtree.dir_size);
-        subsum = subtree.dir_size
+fn walk(subtree: &Dir, required: usize) -> usize {
+    let mut best_fit = 70_000_000;
+    if subtree.dir_size >= required {
+        best_fit = subtree.dir_size
     }
     for subdir in subtree.sub_dirs.iter() {
-        subsum = subsum + walk(&subdir);
+        let candidate_size = walk(&subdir, required);
+        if candidate_size < best_fit {
+            best_fit = candidate_size
+        }
     }
-    subsum
+    best_fit
 }
 
 #[derive(Debug)]
