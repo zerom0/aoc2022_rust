@@ -10,55 +10,67 @@ fn main() {
         .collect::<Vec<Vec<u32>>>();
     let rows = input.len();
     let cols = input.first().unwrap().len();
-    let mut visible_trees = 0;
+    let mut max_visibility = 0;
     (0..rows).for_each(|row| {
         (0..cols).for_each(|col| {
-            if row == 0 || row == (rows - 1) || col == 0 || col == (cols - 1) {
-                visible_trees += 1;
-            } else if left_lower(row, col, &input)
-                || right_lower(row, col, &input)
-                || top_lower(row, col, &input)
-                || bottom_lower(row, col, &input)
-            {
-                visible_trees += 1;
+            print!("{}x{}: ", row, col);
+            let visibility = left_dist(row, col, &input)
+                * right_dist(row, col, &input)
+                * top_dist(row, col, &input)
+                * bottom_dist(row, col, &input);
+            if visibility > max_visibility {
+                max_visibility = visibility;
             }
+            println!();
         })
     });
-    println!("Visible trees = {}", visible_trees);
+    println!("Visible trees = {}", max_visibility);
 }
 
-fn left_lower(row: usize, col: usize, input: &Vec<Vec<u32>>) -> bool {
-    for index in 0..col {
+fn left_dist(row: usize, col: usize, input: &Vec<Vec<u32>>) -> u32 {
+    let mut dist = 0;
+    for index in (0..col).rev() {
+        dist += 1;
         if input[row][index] >= input[row][col] {
-            return false;
+            break;
         }
     }
-    true
+    print!("{} ", dist);
+    dist
 }
 
-fn right_lower(row: usize, col: usize, input: &Vec<Vec<u32>>) -> bool {
+fn right_dist(row: usize, col: usize, input: &Vec<Vec<u32>>) -> u32 {
+    let mut dist = 0;
     for index in (col + 1)..input.first().unwrap().len() {
+        dist += 1;
         if input[row][index] >= input[row][col] {
-            return false;
+            break;
         }
     }
-    true
+    print!("{} ", dist);
+    dist
 }
 
-fn top_lower(row: usize, col: usize, input: &Vec<Vec<u32>>) -> bool {
-    for index in 0..row {
+fn top_dist(row: usize, col: usize, input: &Vec<Vec<u32>>) -> u32 {
+    let mut dist = 0;
+    for index in (0..row).rev() {
+        dist += 1;
         if input[index][col] >= input[row][col] {
-            return false;
+            break;
         }
     }
-    true
+    print!("{} ", dist);
+    dist
 }
 
-fn bottom_lower(row: usize, col: usize, input: &Vec<Vec<u32>>) -> bool {
+fn bottom_dist(row: usize, col: usize, input: &Vec<Vec<u32>>) -> u32 {
+    let mut dist = 0;
     for index in (row + 1)..input.len() {
+        dist += 1;
         if input[index][col] >= input[row][col] {
-            return false;
+            break;
         }
     }
-    true
+    print!("{} ", dist);
+    dist
 }
